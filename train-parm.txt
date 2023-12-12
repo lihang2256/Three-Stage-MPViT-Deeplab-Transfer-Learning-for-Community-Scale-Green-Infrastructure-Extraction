@@ -1,0 +1,329 @@
+"""
+训练：
+************************** voc-111 *******************************
+--model deeplabv3plus_111
+--gpu_id 0
+--total_itrs 20000
+--crop_val
+--lr 0.01
+--crop_size 513
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** cityscapes-222 *******************************
+--model deeplabv3plus_222
+--gpu_id 0
+--data_root ./datasets/data/CityScapes/cityscapes
+--dataset cityscapes
+--total_itrs 20000
+--crop_val
+--lr 0.01
+--crop_size 513
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** land1-resnet101 *******************************
+--model deeplabv3plus_resnet101
+--gpu_id 0
+--data_root ./datasets/data/Land/land1
+--dataset land
+--total_itrs 20000
+--crop_val
+--lr 0.01
+--crop_size 513
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** land2-resnet101 *******************************
+--model deeplabv3plus_resnet101
+--gpu_id 0
+--data_root ./datasets/data/Land/land2
+--dataset land2
+--total_itrs 20000
+--crop_val
+--lr 0.01
+--crop_size 513
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** land2-xception *******************************
+--model deeplabv3plus_xception
+--gpu_id 0
+--data_root ./datasets/data/Land/land2
+--dataset land2
+--total_itrs 20000
+--crop_val
+--lr 0.01
+--crop_size 513
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** land3-mobilenet*******************************
+--model deeplabv3plus_mobilenet
+--gpu_id 0
+--data_root ./datasets/data/Land/land3
+--dataset land3
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 299
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** land3-resnet101*******************************
+--model deeplabv3plus_resnet101
+--gpu_id 0
+--data_root ./datasets/data/Land/land3
+--dataset land3
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 299
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** land3-xception *******************************
+--model deeplabv3plus_xception
+--gpu_id 0
+--data_root ./datasets/data/Land/land3
+--dataset land3
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 299
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** land3-vit *******************************
+--model deeplabv3plus_vit
+--gpu_id 0
+--data_root ./datasets/data/Land/land3
+--dataset land3
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 224
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** land4-mpvit *******************************
+--model deeplabv3plus_mpvit
+--gpu_id 0
+--data_root ./datasets/data/Land/land4
+--dataset land4
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 224
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** voc-mpvit *******************************
+--model deeplabv3plus_mpvit
+--gpu_id 0
+--data_root ./datasets/data/VOCtrainval_11-May-2012
+--dataset voc
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 224
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** cityscapes-mpvit *******************************
+--model deeplabv3plus_mpvit
+--gpu_id 0
+--data_root ./datasets/data/CityScapes/cityscapes
+--dataset cityscapes
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 224
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** land3-mpvit *******************************
+--model deeplabv3plus_mpvit
+--gpu_id 0
+--data_root ./datasets/data/Land/land3
+--dataset land3
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 224
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** csgi-mobilenet*******************************
+--model deeplabv3plus_mobilenet
+--gpu_id 0
+--data_root ./datasets/data/csgi/csgi
+--dataset csgi
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 299
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** csgi-resnet101*******************************
+--model deeplabv3plus_resnet101
+--gpu_id 0
+--data_root ./datasets/data/csgi/csgi
+--dataset csgi
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 299
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** csgi-xception *******************************
+--model deeplabv3plus_xception
+--gpu_id 0
+--data_root ./datasets/data/csgi/csgi
+--dataset csgi
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 299
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** csgi-vit *******************************
+--model deeplabv3plus_vit
+--gpu_id 0
+--data_root ./datasets/data/csgi/csgi
+--dataset csgi
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 224
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** csgi-mpvit *******************************
+--model deeplabv3plus_mpvit
+--gpu_id 0
+--data_root ./datasets/data/csgi/csgi
+--dataset csgi
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 224
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** csgi-mpvit_fz *******************************
+--model deeplabv3plus_mpvit_fz
+--gpu_id 0
+--data_root ./datasets/data/csgi/csgi
+--dataset csgi
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 224
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** csgi-mpvit_fz *******************************
+--model deeplabv3plus_fz_mpvit
+--gpu_id 0
+--data_root ./datasets/data/csgi/csgi
+--dataset csgi
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 224
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+************************** csgi-mpvit_fz_fz *******************************
+--model deeplabv3plus_fz_mpvit_fz
+--gpu_id 0
+--data_root ./datasets/data/csgi/csgi
+--dataset csgi
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 224
+--batch_size 4
+--output_stride 16
+*******************************************************************************
+
+
+验证：
+************************** database-network *******************************
+--model deeplabv3plus_mpvit_fz
+--gpu_id 0
+--data_root ./datasets/data/csgi/csgi
+--dataset csgi
+--total_itrs 30000
+--crop_val
+--lr 0.01
+--crop_size 224
+--batch_size 4
+--output_stride 16
+--ckpt checkpoints1/best_deeplabv3plus_mpvit_fz_csgi_os16.pth
+--test_only
+
+--save_val_results
+*******************************************************************************
+
+预训练：
+************************** imagenet-vit *******************************
+--arch vit
+--batch-size 16
+--max_epoch 30
+--optimizer adamw
+--lr 0.001
+--lr_schedule cos
+--ema
+--data_root ./datasets/data/imagenet2012
+--resume C:\Users\37161\.cache\torch\hub\checkpoints\vit_13_0.1544506847858429.pth
+-e
+*******************************************************************************
+
+************************** imagenet-mpvit *******************************
+--arch mpvit
+--batch-size 16
+--max_epoch 30
+--optimizer adamw
+--lr 0.001
+--lr_schedule cos
+--ema
+--data_root ./datasets/data/imagenet2012
+--resume C:/Users/37161/.cache/torch/hub/checkpoints/mpvit_2_0.29300200939178467.pth
+*******************************************************************************
+
+
+        img_size=224,
+        num_stages=4,
+        num_path=[2, 3, 3, 3],
+        num_layers=[1, 3, 8, 3],
+        embed_dims=[128, 224, 368, 480],
+        mlp_ratios=[4, 4, 4, 4],
+        num_heads=[8, 8, 8, 8],
+
+
+
