@@ -1,0 +1,181 @@
+import torch
+import torch.nn as nn
+from torchvision.models.utils import load_state_dict_from_url
+from torchsummary import summary
+
+from network.utils import TransformerEncoder
+
+__all__ = [
+    "vit_t",
+    "vit_s",
+    "vit_b",
+    "vit_l",
+]
+
+model_urls = {
+    # 'vit_b': 'C:/Users/37161/.cache/torch/hub/checkpoints/imagenet21k+imagenet2012_ViT-B_16-224.pth',
+    'vit_b': 'C:/Users/37161/.cache/torch/hub/checkpoints/vit_13_0.1544506847858429.pth',
+    # 'vit_b': 'C:/Users/37161/.cache/torch/hub/checkpoints/jx_vit_base_patch16_224_in21k-e5005f0a.pth',
+}
+
+
+class ViT(nn.Module):
+    def __init__(self,
+                 img_size=224,
+                 patch_size=16,
+                 hidden_dim=256,
+                 num_heads=8,
+                 depth=6,
+                 mlp_dim=2048,
+                 dropout=0.,
+                 embed_dropout=0.,
+                 pool='cls',
+                 num_classes=1000):
+        super().__init__()
+        self.num_classes = num_classes
+        num_patches = (img_size // patch_size) ** 2
+        # patch embedding
+        self.patch_embedding1 = nn.Conv2d(3, hidden_dim, kernel_size=patch_size, stride=patch_size)
+        self.patch_embedding2 = nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1, stride=1)
+        self.patch_embedding3 = nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1, stride=1)
+        self.patch_embedding4 = nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1, stride=1)
+
+        # self.patch_embedding = nn.Sequential(
+        #     nn.Conv2d(3, hidden_dim, kernel_size=patch_size, stride=patch_size),
+        #     nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1, stride=1),
+        #     nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1, stride=1),
+        #     nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1, stride=1)
+        # )
+
+        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, hidden_dim))
+        self.cls_token = nn.Parameter(torch.randn(1, 1, hidden_dim))
+        self.dropout = nn.Dropout(embed_dropout)
+
+        # transformer encoder
+        self.transformer = TransformerEncoder(dim=hidden_dim,
+                                          depth=depth,
+                                          heads=num_heads,
+                                          dim_head=hidden_dim // num_heads,
+                                          mlp_dim=mlp_dim,
+                                          dropout=dropout)
+
+        self.pool = pool
+        self.to_latent = nn.Identity()
+        # output
+        self.out1 = nn.LayerNorm(hidden_dim)
+        self.out2 = nn.Linear(hidden_dim, num_classes)
+        #
+        # self.out = nn.Sequential(
+        #     nn.LayerNorm(hidden_dim),
+        #     nn.Linear(hidden_dim, num_classes)
+        # )
+
+    def forward(self, x):
+        # patch embedding
+        x = self.patch_embedding1(x)
+        x = self.patch_embedding2(x)
+        x = self.patch_embedding3(x)
+        x = self.patch_embedding4(x)
+
+        # x = self.patch_embedding(x)
+        # [B, C, H, W] -> [B, N, C]
+        x = x.flatten(2).permute(0, 2, 1)
+        B, N, _ = x.shape
+
+        cls_tokens = self.cls_token.repeat(B, 1, 1)
+        x = torch.cat([cls_tokens, x], dim=1)
+        x += self.pos_embedding
+
+        # transformer
+        x = self.transformer(x)
+
+        # [B, N, C] -> [B, C]
+        x = x.mean(1) if self.pool == 'mean' else x[:, 0]
+        x = self.to_latent(x)
+
+        x = self.out1(x)
+        x = self.out2(x)
+
+        # x = self.out(x)
+        return x
+
+
+def vit_t(pretrained=False, **kwargs):
+    model = ViT(img_size=224,
+                patch_size=16,
+                hidden_dim=192,
+                num_heads=3,
+                depth=12,
+                mlp_dim=768,
+                dropout=0.1,
+                embed_dropout=0.1,
+                pool='cls',
+                num_classes=1000)
+
+    return model
+
+
+def vit_s(pretrained=False, **kwargs):
+    model = ViT(img_size=224,
+                patch_size=16,
+                hidden_dim=384,
+                num_heads=6,
+                depth=12,
+                mlp_dim=1536,
+                dropout=0.1,
+                embed_dropout=0.1,
+                pool='cls',
+                num_classes=1000)
+
+    return model
+
+
+def vit_b(pretrained=False, **kwargs):
+    model = ViT(img_size=224,
+                patch_size=16,
+                hidden_dim=768,
+                num_heads=12,
+                depth=12,
+                mlp_dim=3072,
+                dropout=0.1,
+                embed_dropout=0.1,
+                pool='cls',
+                num_classes=1000)
+    if pretrained:
+        pretrained_dict = load_state_dict_from_url(model_urls['vit_b'])
+        # if model_urls['vit_b'] == 'C:/Users/37161/.cache/torch/hub/checkpoints/jx_vit_base_patch16_224_in21k-e5005f0a.pth' or 'C:/Users/37161/.cache/torch/hub/checkpoints/imagenet21k+imagenet2012_ViT-B_16-224.pth':
+        #     print('base pretrain')
+        #     print(pretrained_dict['state_dict'].keys())
+        #     model_dict = model.state_dict()
+        #     for item in model_dict.keys():
+        #         arr = item.split('.')
+        #         # if arr[0][0:3] == 'tra':
+        #         # if item in pretrained_dict['state_dict']:
+        #         #     print(item)
+        #     model.load_state_dict(pretrained_dict)
+        # else:
+        model.load_state_dict(pretrained_dict)
+        print('pretrain')
+    return model
+
+
+def vit_l(pretrained=False, **kwargs):
+    model = ViT(img_size=224,
+                patch_size=16,
+                hidden_dim=1024,
+                num_heads=16,
+                depth=24,
+                mlp_dim=4096,
+                dropout=0.1,
+                embed_dropout=0.1,
+                pool='cls',
+                num_classes=1000)
+
+    return model
+
+
+if __name__ == "__main__":
+    model = vit_b()
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    input_data = torch.randn((4, 3, 224, 224))
+    summary(model.to(device), input_data)
